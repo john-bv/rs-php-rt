@@ -1,9 +1,10 @@
 /// Keywords that are valid in PHP.
 /// These are words that are reserved by the compiler as they serve a certain purpose.
-/// ! Please note that this compiler treats language constructs or "embeded functions" as
-/// ! as reserved expressions!
+/// ! Please note that this compiler treats language constructs or "constant functions" as
+/// ! as reserved calls!
 ///
 /// For more information regarding reserved keywords, visit: https://www.php.net/manual/en/reserved.keywords.php
+#[derive(Debug, Clone)]
 pub enum Keyword {
     /// Abstract, used to define "interface" classes and
     /// are not stand-alone initializable.
@@ -112,42 +113,92 @@ pub enum Keyword {
     /// ```
     Do,
 
+    /// Else, a control word, used as the negating clause to the `if` expression represented.
+    /// For instance, if you have a clause where `$a > $b` and `$a = 1` and `$b = 0`, the else
+    /// statement will be executed.
     Else,
 
+    /// ElseIf, Similar to else, but allows another truthy expression to be evaluated to continue
+    /// walking into scope.
     Elseif,
 
+    /// This is used primarily in a WebApp, where you would have a rendered scope and declare the end of the scope
+    /// For example:
+    /// ```php
+    /// <?php declare(something=1): ?>
+    /// ... html ...
+    /// <?php enddeclare ?>
+    /// ```
     EndDeclare,
 
+    /// Functions identically to EndDeclare.
     EndFor,
 
+    /// Functions identically to EndDeclare.
     EndForEach,
 
+    /// Functions identically to EndDeclare.
     EndIf,
 
+    /// Functions identically to EndDeclare.
     EndSwitch,
 
+    /// Functions identically to EndDeclare.
     EndWhile,
 
+    /// Extends, A keyword used to "extend", "derive", or "inherit" the methods, constants and properties
+    /// from the label following this keyword. For instance, `Foo` would extend `Bar` if `Foo extends Bar`
+    /// is written.
     Extends,
 
+    /// Final, A permissive word used to prevent overriding of a method or constant by prefixing the label with the word
+    /// "final". This keyword can be used with classes, methods, and constants within classes.
     Final,
 
+    /// Finally, is used to execute code regardless of whether an exception was thrown or not. Finally will be executed after either
+    /// the `try` or `catch` block has been executed.
     Finally,
 
+    /// Fn, Used to introduce arrow functions. The Fn keyword creates a function using the built-in `\Closure` class. Arrow functions
+    /// will have the basic form of `fn (args) => expr`. Arrow functions function similarly to anonymous functions, except that they
+    /// use variables from the parent scope by default.
     Fn,
 
+    /// For, a control structure used to loop over and execute an instruction after each loop.
+    /// Syntax:
+    /// ```php
+    /// for (beginning; condition; end_iteration_expression)
+    /// ```
     For,
 
+    /// ForEach, a control structure specifically designed to iterate over an array or object.
+    /// For information regarding this control word please visit: https://www.php.net/manual/en/control-structures.foreach.php
     ForEach,
 
+    /// Function, a keyword that allows a user to define a block of code that can be called repeatedly using it's label.
     Function,
 
+    /// Global, A cursed keyword used to expose a variable to the entire execution tree. Variables exposed by global can be accessed
+    /// using the reserved `$GLOBALS` object.
     Global,
 
+    /// GoTo, another dumb keyword used for jumping to a label a user defines. A label is defined by an identfier following a colon.
+    /// You should definitely use functions instead of this, however this keyword operates identically to a single `jmp` during instruction.
+    ///
+    /// Example:
+    /// ```php
+    /// dog:
+    /// echo "hi";
+    ///
+    /// goto dog;
+    /// ```
     GoTo,
 
+    /// If, a control structure that evaluates a given expression to a boolean, if truthy the block following the `if` keyword and condition
+    /// will be executed, otherwise the `else` block is executed.
     If,
 
+    /// Implements, used to specify that a class must implement the given interface.
     Implements,
 
     Include,
@@ -158,6 +209,8 @@ pub enum Keyword {
 
     InsteadOf,
 
+    /// Interface, used to specify code that a class must implement without having to define how these methods are implemented. Dumbed down,
+    /// an interface is a collection of methods that you promise to define later using the `implements` keyword on the class.
     Interface,
 
     Match,
@@ -200,5 +253,6 @@ pub enum Keyword {
 
     Yield,
 
-    YieldFrom,
+    /// Use in `yield from` for generators.
+    From,
 }
