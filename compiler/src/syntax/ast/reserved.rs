@@ -47,7 +47,7 @@ pub enum ReservedIdent {
     MagicLine,
     MagicMethod,
     MagicNamespace,
-    MagicTrait
+    MagicTrait,
 }
 
 #[derive(Debug, Clone)]
@@ -62,5 +62,5 @@ pub enum ReservedCall {
     Exit,
     IsSet,
     List,
-    Unset
+    Unset,
 }
