@@ -1,10 +1,14 @@
+use std::str::FromStr;
+
+pub const MAX_KEYWORD_LENGTH: usize = 11; 
+
 /// Keywords that are valid in PHP.
 /// These are words that are reserved by the compiler as they serve a certain purpose.
 /// ! Please note that this compiler treats language constructs or "constant functions" as
 /// ! as reserved calls!
 ///
 /// For more information regarding reserved keywords, visit: https://www.php.net/manual/en/reserved.keywords.php
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub enum Keyword {
     /// Abstract, used to define "interface" classes and
     /// are not stand-alone initializable.
@@ -255,4 +259,147 @@ pub enum Keyword {
 
     /// Use in `yield from` for generators.
     From,
+}
+
+impl Keyword {
+    /// Gets the keyword as a string.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Keyword::Abstract => "abstract",
+            Keyword::And => "and",
+            Keyword::As => "as",
+            Keyword::Break => "break",
+            Keyword::Case => "case",
+            Keyword::Catch => "catch",
+            Keyword::Class => "class",
+            Keyword::Clone => "clone",
+            Keyword::Const => "const",
+            Keyword::Continue => "continue",
+            Keyword::Declare => "declare",
+            Keyword::Default => "default",
+            Keyword::Do => "do",
+            Keyword::Else => "else",
+            Keyword::Elseif => "elseif",
+            Keyword::EndDeclare => "enddeclare",
+            Keyword::EndFor => "endfor",
+            Keyword::EndForEach => "endforeach",
+            Keyword::EndIf => "endif",
+            Keyword::EndSwitch => "endswitch",
+            Keyword::EndWhile => "endwhile",
+            Keyword::Extends => "extends",
+            Keyword::Final => "final",
+            Keyword::Finally => "finally",
+            Keyword::Fn => "fn",
+            Keyword::For => "for",
+            Keyword::ForEach => "foreach",
+            Keyword::Function => "function",
+            Keyword::Global => "global",
+            Keyword::GoTo => "goto",
+            Keyword::If => "if",
+            Keyword::Implements => "implements",
+            Keyword::Include => "include",
+            Keyword::IncludeOnce => "include_once",
+            Keyword::InstanceOf => "instanceof",
+            Keyword::InsteadOf => "insteadof",
+            Keyword::Interface => "interface",
+            Keyword::Match => "match",
+            Keyword::Namespace => "namespace",
+            Keyword::New => "new",
+            Keyword::Or => "or",
+            Keyword::Private => "private",
+            Keyword::Protected => "protected",
+            Keyword::Public => "public",
+            Keyword::ReadOnly => "readonly",
+            Keyword::Require => "require",
+            Keyword::RequireOnce => "require_once",
+            Keyword::Return => "return",
+            Keyword::Static => "static",
+            Keyword::Switch => "switch",
+            Keyword::Throw => "throw",
+            Keyword::Trait => "trait",
+            Keyword::Try => "try",
+            Keyword::Use => "use",
+            Keyword::Var => "var",
+            Keyword::While => "while",
+            Keyword::Yield => "yield",
+            Keyword::From => "from",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct KeywordErr;
+
+impl FromStr for Keyword {
+    type Err = KeywordErr;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "abstract" => Ok(Self::Abstract),
+            "and" => Ok(Self::And),
+            "as" => Ok(Self::As),
+            "break" => Ok(Self::Break),
+            "case" => Ok(Self::Case),
+            "catch" => Ok(Self::Catch),
+            "class" => Ok(Self::Class),
+            "clone" => Ok(Self::Clone),
+            "const" => Ok(Self::Const),
+            "continue" => Ok(Self::Continue),
+            "declare" => Ok(Self::Declare),
+            "default" => Ok(Self::Default),
+            "do" => Ok(Self::Do),
+            "else" => Ok(Self::Else),
+            "elseif" => Ok(Self::Elseif),
+            "enddeclare" => Ok(Self::EndDeclare),
+            "endfor" => Ok(Self::EndFor),
+            "endforeach" => Ok(Self::EndForEach),
+            "endif" => Ok(Self::EndIf),
+            "endswitch" => Ok(Self::EndSwitch),
+            "endwhile" => Ok(Self::EndWhile),
+            "extends" => Ok(Self::Extends),
+            "final" => Ok(Self::Final),
+            "finally" => Ok(Self::Finally),
+            "fn" => Ok(Self::Fn),
+            "for" => Ok(Self::For),
+            "foreach" => Ok(Self::ForEach),
+            "function" => Ok(Self::Function),
+            "global" => Ok(Self::Global),
+            "goto" => Ok(Self::GoTo),
+            "if" => Ok(Self::If),
+            "implements" => Ok(Self::Implements),
+            "include" => Ok(Self::Include),
+            "include_once" => Ok(Self::IncludeOnce),
+            "instanceof" => Ok(Self::InstanceOf),
+            "insteadof" => Ok(Self::InsteadOf),
+            "interface" => Ok(Self::Interface),
+            "match" => Ok(Self::Match),
+            "namespace" => Ok(Self::Namespace),
+            "new" => Ok(Self::New),
+            "or" => Ok(Self::Or),
+            "private" => Ok(Self::Private),
+            "protected" => Ok(Self::Protected),
+            "public" => Ok(Self::Public),
+            "readonly" => Ok(Self::ReadOnly),
+            "require" => Ok(Self::Require),
+            "require_once" => Ok(Self::RequireOnce),
+            "return" => Ok(Self::Return),
+            "static" => Ok(Self::Static),
+            "switch" => Ok(Self::Switch),
+            "throw" => Ok(Self::Throw),
+            "trait" => Ok(Self::Trait),
+            "try" => Ok(Self::Try),
+            "use" => Ok(Self::Use),
+            "var" => Ok(Self::Var),
+            "while" => Ok(Self::While),
+            "yield" => Ok(Self::Yield),
+            "from" => Ok(Self::From),
+            _ => Err(KeywordErr),
+        }
+    }
+}
+
+impl std::fmt::Display for Keyword {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.as_str())
+    }
 }

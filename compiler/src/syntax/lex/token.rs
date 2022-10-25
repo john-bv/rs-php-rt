@@ -137,6 +137,10 @@ pub enum StringType {
 #[derive(Debug, Clone)]
 pub enum TokenType {
     /// End of File
+    EOF,
+    /// Used to identify any form of comments.
+    /// This meta is saved.
+    Comment,
     /// Used internally to represent the end of lexing.
     ///
     /// NOT USED TO REPRESENT MAGIC CONSTANTS
@@ -217,6 +221,12 @@ pub enum TokenType {
 
     /// The `,` character that signals the end of a parameter.
     Comma,
+
+    /// The `:` character that signals a type? this probably isnt allowed in php
+    Colon,
+
+    /// The `.` character that signals the concation of a string.
+    Dot,
 
     /// The `\` character that signals the start of a string literal.
     Backslash,
