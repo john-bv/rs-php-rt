@@ -217,12 +217,8 @@ impl Cursor<'_> {
             segment.push(next_char);
 
             if segment == "true" || segment == "false" {
-                if self.nth_char(i + 1).is_whitespace() {
-                    self.peek_inc(i);
-                    return Some(segment);
-                } else {
-                    return None;
-                }
+                self.peek_inc(i);
+                return Some(segment);
             }
         }
         return None;
