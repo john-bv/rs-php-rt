@@ -207,27 +207,21 @@ impl Cursor<'_> {
     }
 
     fn eat_boolean(&mut self) -> Option<String> {
-        // TODO: it may not be the best practice to use this vector
         // there is probably a better way to do this.
-        let v = self.eat_while(|c: char| c.is_alphabetic());
-        for value in ["true", "false"].iter() {
-            let mut segment = String::new();
-            for i in 0..value.len() {
-                let next_char = self.nth_char(i);
-                if next_char == END_OF_FILE {
-                    return None;
-                }
+        let mut segment = String::new();
+        for i in 0..4 {
+            let next_char = self.nth_char(i);
+            if next_char == END_OF_FILE {
+                return None;
+            }
+            segment.push(next_char);
 
-                // Next character doesn't match current value
-                // Move to next value if one exists
-                if next_char != value.chars().nth(i).unwrap() {
-                    continue;
-                }
-                segment.push(next_char);
-
-                if segment == value.to_string() {
+            if segment == "true" || segment == "false" {
+                if self.nth_char(i + 1).is_whitespace() {
                     self.peek_inc(i);
                     return Some(segment);
+                } else {
+                    return None;
                 }
             }
         }
