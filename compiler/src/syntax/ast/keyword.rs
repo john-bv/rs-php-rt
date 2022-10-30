@@ -20,13 +20,37 @@ pub enum Keyword {
 
     /// As, used for iterating over arrays or objects.
     /// Usage:
-    /// ```php no_run
+    /// ```php
     /// $arr = [1, 3, 44];
     /// foreach ($arr as $v) {
     ///     echo "$v";
     /// }
     /// ```
     As,
+
+    /// Async, used to defined asynchronous functions.
+    /// Php does NOT natively support this behavior and is therefore gated behind
+    /// a flag during runtime. HOWEVER scripts with this keyword WILL pass tokenization!
+    ///
+    /// !! **FIBERS ARE NOT SUPPORTED WITH THIS FEATURE FLAG** !!
+    ///
+    /// Usage:
+    /// ```php
+    /// use std::Generics;
+    /// use std::async::Future;
+    /// use std::async::set_timeout;
+    ///
+    /// async function foo(): \Future<int> {
+    ///    return set_timeout(function() {
+    ///       return 0;
+    ///    }, 1000).poll();
+    /// }
+    ///
+    /// $x = await foo(); // 0
+    /// ```
+    Async,
+
+    Await,
 
     /// Break, a control operator,
     /// used to break out of the statements:
@@ -268,6 +292,8 @@ impl Keyword {
             Keyword::Abstract => "abstract",
             Keyword::And => "and",
             Keyword::As => "as",
+            Keyword::Async => "async",
+            Keyword::Await => "await",
             Keyword::Break => "break",
             Keyword::Case => "case",
             Keyword::Catch => "catch",
@@ -338,6 +364,8 @@ impl FromStr for Keyword {
             "abstract" => Ok(Self::Abstract),
             "and" => Ok(Self::And),
             "as" => Ok(Self::As),
+            "async" => Ok(Self::Async),
+            "await" => Ok(Self::Await),
             "break" => Ok(Self::Break),
             "case" => Ok(Self::Case),
             "catch" => Ok(Self::Catch),
