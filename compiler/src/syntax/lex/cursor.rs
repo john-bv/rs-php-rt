@@ -1,4 +1,4 @@
-use std::{str::Chars, io::Error, io::ErrorKind};
+use std::{io::Error, io::ErrorKind, str::Chars};
 
 pub const END_OF_FILE: char = '\0';
 
@@ -60,7 +60,9 @@ impl<'a> Cursor<'a> {
     /// Returns the `nth_char` releative to the current cursor pos
     /// If the position given doesn't exist, `END_OF_FILE` is returned.
     pub fn nth_char(&self, amt: usize) -> Result<char, Error> {
-        self.chars().nth(amt).ok_or_else(|| Error::from(ErrorKind::UnexpectedEof))
+        self.chars()
+            .nth(amt)
+            .ok_or_else(|| Error::from(ErrorKind::UnexpectedEof))
     }
 
     /// Copies the current chars in the cursor.
@@ -127,5 +129,3 @@ impl<'a> Cursor<'a> {
 pub fn is_line_ending(c: char) -> bool {
     c == '\n'
 }
-
-

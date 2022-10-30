@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-pub const MAX_KEYWORD_LENGTH: usize = 11; 
+pub const MAX_KEYWORD_LENGTH: usize = 11;
 
 /// Keywords that are valid in PHP.
 /// These are words that are reserved by the compiler as they serve a certain purpose.

@@ -231,6 +231,9 @@ pub enum TokenType {
     /// The `\` character that signals the start of a string literal.
     Backslash,
 
+    /// The `?` character that signals the start of a ternary expression.
+    QuestionMark,
+
     /// The `$` character that signals the definition or calling of a variable.
     /// > - < wtf php!
     Variable,

@@ -1,10 +1,16 @@
-use std::{io::{Error, ErrorKind}, str::FromStr};
+use std::{
+    io::{Error, ErrorKind},
+    str::FromStr,
+};
 
-use self::{cursor::{Cursor, END_OF_FILE}, token::{Token, TokenType, AccessType, Numeric, StringType}};
+use self::{
+    cursor::{Cursor, END_OF_FILE},
+    token::{AccessType, Numeric, StringType, Token, TokenType},
+};
 
 use crate::token;
 
-use super::ast::keyword::{MAX_KEYWORD_LENGTH, Keyword};
+use super::ast::keyword::{Keyword, MAX_KEYWORD_LENGTH};
 
 pub(crate) mod cursor;
 pub mod token;
@@ -42,12 +48,7 @@ impl Cursor<'_> {
         }
 
         if let Some(keyword) = self.eat_keyword()? {
-            return token!(
-                start_pos,
-                self.get_pos(),
-                TokenType::Keyword(keyword),
-                None
-            );
+            return token!(start_pos, self.get_pos(), TokenType::Keyword(keyword), None);
         }
 
         if let Some(boolean) = self.eat_boolean()? {
@@ -88,7 +89,14 @@ impl Cursor<'_> {
         }
 
         self.peek();
-        return Ok(None);
+        return Err(Error::new(
+            ErrorKind::InvalidData,
+            format!(
+                "Failed to parse a token from buffer: {} until {}",
+                start_pos,
+                self.get_pos()
+            ),
+        ));
     }
 
     fn eat_comment(&mut self) -> Result<Option<String>, Error> {
@@ -131,7 +139,7 @@ impl Cursor<'_> {
         };
     }
 
-    fn eat_identifier(&mut self) -> Result<Option<String>, Error>  {
+    fn eat_identifier(&mut self) -> Result<Option<String>, Error> {
         Ok(match self.first()? {
             // 'A'..='z' can't be used here as it includes a plethora of reserved characters that are used elsewhere
             '_' | 'a'..='z' | 'A'..='Z' => Some(
@@ -141,7 +149,7 @@ impl Cursor<'_> {
         })
     }
 
-    fn eat_number(&mut self) -> Result<Option<Numeric>, Error>  {
+    fn eat_number(&mut self) -> Result<Option<Numeric>, Error> {
         Ok(match self.first()? {
             // there is an issue with leading floats where they are parsed as accessors right now.
             // we should leave this to the parser.
@@ -150,17 +158,16 @@ impl Cursor<'_> {
                 // todo ACTUALLY IMPLEMENT THIS
                 self.eat_while(|c: char| c.is_digit(10) || c == '.');
                 Some(Numeric::Int(0))
-            },
+            }
             _ => None,
         })
     }
 
     /// Eats a keyword but does not parse it.
-    fn eat_keyword(&mut self) -> Result<Option<Keyword>, Error>  {
+    fn eat_keyword(&mut self) -> Result<Option<Keyword>, Error> {
         let mut segment = String::new();
         for i in 0..MAX_KEYWORD_LENGTH {
             segment.push(self.nth_char(i)?);
-
 
             if let Ok(keyword) = Keyword::from_str(&segment) {
                 if self.nth_char(i + 1)?.is_whitespace() {
@@ -205,9 +212,7 @@ impl Cursor<'_> {
         // there is probably a better way to do this.
         let mut segment = String::new();
         for i in 0..4 {
-            segment.push(
-                self.nth_char(i)?
-            );
+            segment.push(self.nth_char(i)?);
 
             if segment == "true" || segment == "false" {
                 self.peek_inc(i);
@@ -227,9 +232,7 @@ impl Cursor<'_> {
                 '\'' => StringType::Single,
                 _ => unreachable!(),
             };
-            return Ok(
-                Some((variant, self.eat_while(|c| c != first)?))
-            );
+            return Ok(Some((variant, self.eat_while(|c| c != first)?)));
         }
     }
 
@@ -238,12 +241,15 @@ impl Cursor<'_> {
             ':' => {
                 if self.second()? == ':' {
                     self.peek_inc(1);
-                    Some((TokenType::Accessor(AccessType::StaticMember), "::".to_string()))
+                    Some((
+                        TokenType::Accessor(AccessType::StaticMember),
+                        "::".to_string(),
+                    ))
                 } else {
                     self.peek();
                     Some((TokenType::Colon, ":".to_string()))
                 }
-            },
+            }
             _ => None,
         })
     }
@@ -261,19 +267,20 @@ impl Cursor<'_> {
             '\\' => Some(TokenType::Backslash),
             '.' => Some(TokenType::Dot),
             '$' => Some(TokenType::Variable),
+            '?' => Some(TokenType::QuestionMark),
             _ => None,
         })
     }
 }
 
 pub struct Lexer<'a> {
-    cursor: Cursor<'a>
+    cursor: Cursor<'a>,
 }
 
 impl<'a> Lexer<'a> {
     pub fn new(script: &'a str) -> Self {
         Self {
-            cursor: Cursor::new(script)
+            cursor: Cursor::new(script),
         }
     }
     /// Consumes the next possible token(s).
