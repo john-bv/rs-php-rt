@@ -1,4 +1,4 @@
-use std::str::Chars;
+use std::{str::Chars, io::Error, io::ErrorKind};
 
 pub const END_OF_FILE: char = '\0';
 
@@ -48,19 +48,19 @@ impl<'a> Cursor<'a> {
     }
 
     // Grabs the next char without consuming it.
-    pub fn first(&self) -> char {
+    pub fn first(&self) -> Result<char, Error> {
         self.nth_char(0)
     }
 
     // Grabs the second char without consuming it.
-    pub fn second(&self) -> char {
+    pub fn second(&self) -> Result<char, Error> {
         self.nth_char(1)
     }
 
     /// Returns the `nth_char` releative to the current cursor pos
     /// If the position given doesn't exist, `END_OF_FILE` is returned.
-    pub fn nth_char(&self, amt: usize) -> char {
-        self.chars().nth(amt).unwrap_or(END_OF_FILE)
+    pub fn nth_char(&self, amt: usize) -> Result<char, Error> {
+        self.chars().nth(amt).ok_or_else(|| Error::from(ErrorKind::UnexpectedEof))
     }
 
     /// Copies the current chars in the cursor.
@@ -104,23 +104,23 @@ impl<'a> Cursor<'a> {
         self.ilen - self.chars.as_str().len()
     }
 
-    pub fn eat_while(&mut self, mut pred: impl FnMut(char) -> bool) -> String {
+    pub fn eat_while(&mut self, mut pred: impl FnMut(char) -> bool) -> Result<String, Error> {
         let mut segment = String::new();
-        while !self.is_eof() && pred(self.first()) == true {
+        while !self.is_eof() && pred(self.first()?) == true {
             segment.push(self.peek().unwrap_or(END_OF_FILE));
         }
-        segment
+        Ok(segment)
     }
 
     pub fn eat_while_cursor(
         &mut self,
         mut pred: impl FnMut(&mut Cursor<'a>, char) -> bool,
-    ) -> String {
+    ) -> Result<String, Error> {
         let mut segment = String::new();
-        while !self.is_eof() && pred(self, self.first()) == true {
+        while !self.is_eof() && pred(self, self.first()?) == true {
             segment.push(self.peek().unwrap_or(END_OF_FILE));
         }
-        segment
+        Ok(segment)
     }
 }
 

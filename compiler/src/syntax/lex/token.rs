@@ -32,10 +32,10 @@ impl Token {
 #[macro_export]
 macro_rules! token {
     ($start: expr, $end: expr, $t: expr, $v: expr) => {
-        Some(Token($t, $start..$end, $v))
+        Ok(Some(Token($t, $start..$end, $v)))
     };
     ($start: expr, $end: expr, $t: expr) => {
-        Some(Token($t, $start..$end, None))
+        Ok(Some(Token($t, $start..$end, None)))
     };
 }
 
